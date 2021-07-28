@@ -1,5 +1,7 @@
 import firebase from "firebase/app";
 import "firebase/auth";
+import 'firebase/firestore';
+import 'firebase/storage';
 
 const firebaseConfig = {
     apiKey: "AIzaSyAmqFNuNMnOykhBTJBvyICDDMYk4i4kAgI",
@@ -15,5 +17,7 @@ firebase.initializeApp(firebaseConfig);
 
 const apiKey = firebaseConfig.apiKey;
 const auth = firebase.auth();       // 인증 모듈
+const firestore = firebase.firestore();
+const storage = firebase.storage();
 
-export {auth, apiKey};
+export {auth, apiKey, firestore, storage};

@@ -2,29 +2,40 @@ import React from "react";
 // import Grid from "../elements/Grid";
 // import Image from "../elements/Image";
 // import Text from "../elements/Text";
-
-import {Grid, Image, Text} from "../elements";
+import { history } from "../redux/configureStore"
+import {Grid, Image, Text, Button} from "../elements";
+import { useSelector } from "react-redux";
 
 
 const Post = (props) => {
+  const user = useSelector(state => state.user.user);
+  // console.log(props);
 
+  const updatePost = (id) => {
+    sessionStorage.setItem("is_update", true);
+    sessionStorage.setItem("post_id", id);
+    history.push(`/write/${id}`);
+  }
     return (
       <React.Fragment>
         <Grid>
           <Grid is_flex padding="16px">
             <Grid is_flex width="auto">
-              <Image shape="circle" src={props.src} />
+              <Image shape="circle" src={props.image_url} />
               <Text bold>{props.user_info.user_name}</Text>
             </Grid>
             <Grid is_flex width="auto">
               <Text>{props.insert_dt}</Text>
+              {
+                user && user.uid === props.user_info.user_id && <Button _onClick={() => updatePost(props.id)} width="50px" text="수정"></Button>
+              }
             </Grid>
           </Grid>
           <Grid padding="16px">
             <Text>{props.contents}</Text>
           </Grid>
           <Grid>
-            <Image shape="rectangle" src={props.src} />
+            <Image shape="rectangle" src={props.image_url} />
           </Grid>
           <Grid padding="16px">
             <Text margin="0px" bold>댓글 {props.comment_cnt}개</Text>
