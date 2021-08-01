@@ -15,12 +15,10 @@ const PostDetail = (props) => {
     const user_info = useSelector((state) => state.user.user);
 
     useEffect(() => {
-
         if(post) return;
         dispatch(postActions.getOnePostFB(id));
     },[]);
 
-    console. log(post);
     return (
         <React.Fragment>                            {/*user_info가 있을경우에만 uid에 접근한다. */}
             {post && <Post {...post} is_me={post.user_info.user_id === user_info?.uid}/>}

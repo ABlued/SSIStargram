@@ -9,10 +9,6 @@ const Upload = (props) => {
     const is_uploading = useSelector(state => state.image.uploading)
     const fileInput = useRef();
     const selectFile = (e) => {
-        console.log(e);
-        console.log(e.target);
-        console.log(e.target.files);
-        console.log(fileInput.current.files);
 
         const reader = new FileReader();
         const file = fileInput.current.files[0];

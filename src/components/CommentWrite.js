@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 import {Grid, Input, Button} from "../elements";
 import { actionCreators as commentActions } from "../redux/modules/comment";
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 const CommentWrite = (props) => {
   const dispatch = useDispatch();
@@ -13,7 +13,6 @@ const CommentWrite = (props) => {
   }
 
   const write = () => {
-    console.log(comment_text);
     dispatch(commentActions.addCommentFB(post_id, comment_text));
     setCommentText('');
   }
@@ -28,7 +27,7 @@ const CommentWrite = (props) => {
           value={comment_text} 
           is_submit
         />
-        <Button width="50px" margin="0px 2px 0px 2px" _onClick={write}>작성</Button>
+        <Button width="50px" margin="0px 2px 0px 2px" _onClick={write} position="relative" top="8px">작성</Button>
       </Grid>
     </React.Fragment>
   );

@@ -1,17 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { Grid, Text, Input, Button } from "../elements";
 
 import { useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";
 import { emailCheck } from "../shared/common";
 
-const Signup = (props) => {
+const Signup = () => {
   const dispatch = useDispatch();
 
-  const [id, setId] = React.useState("");
-  const [pwd, setPwd] = React.useState("");
-  const [pwd_check, setPwdCheck] = React.useState("");
-  const [user_name, setUserName] = React.useState("");
+  const [id, setId] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [pwd_check, setPwdCheck] = useState("");
+  const [user_name, setUserName] = useState("");
 
   const signup = () => {
     if (id === "" || pwd === "" || user_name === "") {
@@ -61,6 +61,7 @@ const Signup = (props) => {
         <Grid padding="16px 0px">
           <Input
             label="비밀번호"
+            type="password"
             placeholder="비밀번호를 입력해주세요."
             _onChange={(e) => {
               setPwd(e.target.value);
@@ -71,6 +72,7 @@ const Signup = (props) => {
         <Grid padding="16px 0px">
           <Input
             label="비밀번호 확인"
+            type="password"
             placeholder="비밀번호를 다시 입력해주세요."
             _onChange={(e) => {
               setPwdCheck(e.target.value);

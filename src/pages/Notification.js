@@ -20,11 +20,11 @@ const Notification = (props) => {
         let _noti_list = Object.keys(_data).reverse().map(v => {
           return _data[v];
         });
-        console.log(_noti_list);
         setNoti(_noti_list);
       }
     })
-  },[user])
+  },[user]);
+  
     return (
       <React.Fragment>
         <Grid padding="16px" bg="#EFF6FF">

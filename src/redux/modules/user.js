@@ -2,8 +2,10 @@ import { createAction, handleActions } from "redux-actions";
 import { produce } from 'immer';
 import { setCookie, getCookie, deleteCookie } from "../../shared/Cookie";
 
-import {auth} from '../../shared/firebase';
+import {auth, realtime} from '../../shared/firebase';
 import firebase from "firebase/app"
+import { firestore } from "../../shared/firebase";
+
 
 // actions
 const LOG_IN = "LOG_IN";
@@ -50,13 +52,6 @@ const user_initial = {
     user_name: 'ablue',
 }
 // middleware actions
-// const loginAction = (user) => {
-//     return function(dispatch, getState, {history}){
-//         console.log(history);
-//         dispatch(setUser(user));
-//         history.push('/');
-//     }
-// }
 
 const loginFB = (id, pwd) => {
     return function (dispatch, getState, {history}) {
@@ -66,7 +61,6 @@ const loginFB = (id, pwd) => {
             auth
             .signInWithEmailAndPassword(id, pwd)        // firebase에서 로그인 정보가 유효한지 체크
             .then((user) => {
-                console.log(user);
                 dispatch(setUser({
                     user_name: user.user.displayName,
                     id: id,
@@ -88,6 +82,9 @@ const loginCheckFB = () => {
     return function (dispatch, getState, {history}){
         auth.onAuthStateChanged((user) => {     // 이 유저가 있냐없냐 확인하기
             if(user){
+                // const userDB = firestore.collection("userProfileInfo");
+                // userDB.where("id", "==", user.uid).get().then(doc => {
+                // })
                 dispatch(setUser({
                     user_name: user.displayName,
                     user_profile: "",
@@ -112,21 +109,35 @@ const logoutFB = () => {
 
 const signupFB = (id, pwd, user_name) => {
     return function (dispatch, getState, {history}){
+        const selectedIndex = Math.random()
+        const profileDB = firestore.collection("profile");
+        const userDB = firestore.collection("userProfileInfo");
+        let profileSrc = '';
+        profileDB.get().then(docs => {
+            const selectedIndex = Math.floor(Math.random() * docs.size);
+            let count = 0;
+            docs.forEach(doc => {
+                if(count === selectedIndex) {
+                    profileSrc = doc.data().src;
+                }
+                count++;
+            })
+        })
         auth
         .createUserWithEmailAndPassword(id, pwd)
         .then((user) => {
             // Signed in
             // ...
-            console.log(user);
             auth.currentUser.updateProfile({
                 displayName: user_name,
             }).then(() => {
                 dispatch(setUser({
                     user_name: user_name, 
                     id: id, 
-                    user_profile:'',
+                    user_profile: profileSrc,
                     uid: user.user.uid,      // 유저의 고유값
                 }));
+                userDB.add({id:user.user.uid, src:profileSrc})
                 history.push('./');
             }).catch((error) => {
                 console.log(error);

@@ -49,8 +49,6 @@ const editPostFB = (post_id = null, post = {}) => {
     const _post_idx = getState().post.list.findIndex((p) => p.id === post_id);
     const _post = getState().post.list[_post_idx];
 
-    console.log(_post);
-
     const postDB = firestore.collection("post");
 
     if (_image === _post.image_url) {
@@ -208,25 +206,6 @@ const getPostFB = (start = null, size = 3) => {
     dispatch(setPost(post_list, paging));
   });
     return;
-    postDB.get().then((docs) => {
-      let post_list = [];
-      docs.forEach((doc) => {
-        let _post = doc.data();
-
-        // ['commenct_cnt', 'contents', ..]
-        let post = Object.keys(_post).reduce(
-          (acc, cur) => {
-            if (cur.indexOf("user_") !== -1) {
-              return {
-                ...acc,
-                user_info: { ...acc.user_info, [cur]: _post[cur] },
-              };
-            }
-            return { ...acc, [cur]: _post[cur] };       // ...이전 값,  key 값: value 값
-          },
-          { id: doc.id, user_info: {} }
-        );
-
                         // let _post = {
                 //     id: doc.id,
                 //     ...doc.data()
@@ -243,13 +222,6 @@ const getPostFB = (start = null, size = 3) => {
                 //     comment_cnt: _post.comment_cnt,
                 //     insert_dt: _post.insert_dt,
                 // }
-        post_list.push(post);
-      });
-
-      console.log(post_list);
-
-      dispatch(setPost(post_list));
-    });
   };
 };
 

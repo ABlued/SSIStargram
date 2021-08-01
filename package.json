@@ -10,6 +10,7 @@
     "@testing-library/user-event": "^12.1.10",
     "connected-react-router": "^6.8.0",
     "firebase": "^8.2.10",
+    "firebase-tools": "^9.16.0",
     "history": "^4.10.1",
     "immer": "^8.0.1",
     "lodash": "^4.17.21",
