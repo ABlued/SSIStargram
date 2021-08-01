@@ -1,48 +1,39 @@
-import React from 'react'
-import { useSelector } from "react-redux";
-import {Grid, Text, Button, Image} from "../elements";
-import { history } from "../redux/configureStore"
+import React, { useState, useEffect } from "react";
+import {Grid, Text} from "../elements";
+import Card from "../components/Card";
+import {realtime} from '../shared/firebase';
+import { useSelector } from 'react-redux';
 
-const NotificationCard = (props) => {
-    return(
-      <Grid is_flex padding="16px" bg="white" margin="10px">
-        <Image shape="rectangle" src={props.image_url} width="50px"/>
-        <Text padding="16px"><span style={{fontWeight:'bold'}}>{props.user_name}</span>님이 게시글에 댓글을 남겼습니다 :)!</Text>
-      </Grid>
+const Notification = (props) => {
 
-    )
-}
-
-
-const Notification = () => {
-  const is_login = useSelector(state => state.user.is_login);
-
-  if(!is_login){
-    return(
-      <Grid margin="100px 0px" padding="16px" center>
-        <Text size="32px" bold>앗! 잠깐!</Text>
-        <Text size="16px">로그인 후에만 글을 쓸 수 있어요!</Text>
-        <Button _onClick={() => {history.replace("/")}}>로그인 하러가기</Button>
-      </Grid>
-    )
-  }
+  const user = useSelector(state => state.user.user);
+  const [noti, setNoti] = useState([]);
+  useEffect(() => {
+    if(!user) return;
+    const notiDB = realtime.ref(`noti/${user.uid}/list`);
+    // realtime베이스에 데이터를 정렬하는 함수
+    const _noti = notiDB.orderByChild("insert_dt");
+    // 데이터를 처음 한 번만 쓸거니까 once를 쓴다
+    _noti.once("value", snapshot => {
+      if(snapshot.exists()){
+        let _data = snapshot.val();
+        let _noti_list = Object.keys(_data).reverse().map(v => {
+          return _data[v];
+        });
+        console.log(_noti_list);
+        setNoti(_noti_list);
+      }
+    })
+  },[user])
     return (
-        <Grid padding="16px" is_flex bg="rgba(240, 246, 254, 1)" flex_direction="column">
-          <NotificationCard/>
-          <NotificationCard/>
-          <NotificationCard/>
-          <NotificationCard/>
-          <NotificationCard/>
-          <NotificationCard/>
-          <NotificationCard/>
-          <NotificationCard/>
-          <NotificationCard/>
+      <React.Fragment>
+        <Grid padding="16px" bg="#EFF6FF">
+          {noti.map((n, idx) => {
+            return <Card {...n} key={`noti_${idx}`} />;
+          })}
         </Grid>
-    )
+      </React.Fragment>
+    );
 }
-NotificationCard.defaultProps = {
-  user_name: "ablue",
-  image_url: "https://mean0images.s3.ap-northeast-2.amazonaws.com/4.jpeg",
-};
 
-export default Notification
+export default Notification;
