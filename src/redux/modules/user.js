@@ -61,12 +61,22 @@ const loginFB = (id, pwd) => {
             auth
             .signInWithEmailAndPassword(id, pwd)        // firebase에서 로그인 정보가 유효한지 체크
             .then((user) => {
-                dispatch(setUser({
-                    user_name: user.user.displayName,
-                    id: id,
-                    user_profile:'',
-                    uid: user.user.uid,      // 유저의 고유값
-                }));
+
+                let imageSrc = '';
+                const userDB = firestore.collection("userProfileInfo");
+                console.log(user.user.uid);
+                userDB.where("id", "==", user.user.uid).get().then(docs => {
+                    docs.forEach(doc => {
+                        imageSrc = doc.data().src;
+                        console.log(doc.data().src);
+                    })
+                    dispatch(setUser({
+                        user_name: user.user.displayName,
+                        id: id,
+                        user_profile: imageSrc,
+                        uid: user.user.uid,      // 유저의 고유값
+                    }));
+                })
                 history.push('./');
             })
             .catch((error) => {
@@ -82,15 +92,17 @@ const loginCheckFB = () => {
     return function (dispatch, getState, {history}){
         auth.onAuthStateChanged((user) => {     // 이 유저가 있냐없냐 확인하기
             if(user){
-                // const userDB = firestore.collection("userProfileInfo");
-                // userDB.where("id", "==", user.uid).get().then(doc => {
-                // })
-                dispatch(setUser({
-                    user_name: user.displayName,
-                    user_profile: "",
-                    id: user.email,
-                    uid: user.uid,
-                }))
+                const userDB = firestore.collection("userProfileInfo");
+                userDB.where("id", "==", user.uid).get().then(docs => {
+                    docs.forEach(doc => {
+                        dispatch(setUser({
+                            user_name: user.displayName,
+                            user_profile: doc.data().src,
+                            id: user.email,
+                            uid: user.uid,
+                        }))
+                    })
+                })
             } else {
                 dispatch(logOut());
             }
@@ -138,6 +150,10 @@ const signupFB = (id, pwd, user_name) => {
                     uid: user.user.uid,      // 유저의 고유값
                 }));
                 userDB.add({id:user.user.uid, src:profileSrc})
+                const _noti_item = realtime.ref(`noti/${user.user.uid}`);
+                _noti_item.set({
+                    read:true,
+                })
                 history.push('./');
             }).catch((error) => {
                 console.log(error);

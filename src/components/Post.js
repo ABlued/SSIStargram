@@ -3,12 +3,13 @@ import {Grid, Image, Text, Button} from "../elements";
 import { history } from "../redux/configureStore";
 
 const Post = memo((props) => {
+  console.log(props);
     return (
       <React.Fragment>
         <Grid margin="10px 0px 0px 0px">
           <Grid is_flex padding="16px">
             <Grid is_flex width="auto">
-              <Image shape="circle" src={props.src} />
+              <Image shape="circle" src={props.user_info.user_profile} />
               <Text bold>{props.user_info.user_name}</Text>
             </Grid>
             <Grid is_flex width="auto">

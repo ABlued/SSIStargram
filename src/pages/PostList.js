@@ -14,8 +14,14 @@ const PostList = (props) => {
     const is_loading = useSelector((state) => state.post.is_loading);
     const paging = useSelector((state) => state.post.paging);
     const { history } = props;
-
     React.useEffect(() => {
+        // const userDB = firestore.collection("userProfileInfo");
+        // console.log(user_info.uid);
+        // userDB.where("id", "==", user_info.uid).get().then(docs => {
+        //     docs.forEach(doc => {
+        //         console.log(doc.data());
+        //     })
+        // })
         if(post_list.length < 2){
             dispatch(postActions.getPostFB());
         }
@@ -30,8 +36,6 @@ const PostList = (props) => {
                 loading={is_loading}
             >
                 {post_list.map((p, idx) => {
-                    
-                    // console.log(p);
                     
                     if(user_info && p.user_info.user_id === user_info.uid){
                         return (

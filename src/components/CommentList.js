@@ -36,7 +36,7 @@ const CommentItem = (props) => {
     return (
         <Grid is_flex>
             <Grid is_flex width="auto">
-                <Image shape="circle"/>
+                <Image shape="circle" src={user_profile}/>
                 <Text bold>{user_name}</Text>
             </Grid>
             <Grid is_flex margin="0px 4px">

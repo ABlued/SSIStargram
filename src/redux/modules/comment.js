@@ -47,21 +47,23 @@ const addCommentFB = (post_id, contents) => {
           dispatch(addComment(post_id, comment));
           if(post){
             dispatch(postActions.editPost(post_id,{comment_cnt: parseInt(post.comment_cnt) + 1}));
-            const _noti_item = realtime.ref(`noti/${post.user_info.user_id}/list`).push();
-            // notiDB.update({read:false});
-            _noti_item.set({
-              post_id: post.id,
-              user_name: comment.user_name,
-              image_url: post.image_url,
-              insert_dt: comment.insert_dt,
-            }, (err) => {
-              if(err){
-                console.log('알림 저장에 실패했습니다.!!');
-              } else {
-                const notiDB = realtime.ref(`noti/${post.user_info.user_id}`);
-                notiDB.update({read: false});
-              }
-            })
+            if(post.user_info.user_id !== user_info.uid){
+              const _noti_item = realtime.ref(`noti/${post.user_info.user_id}/list`).push();
+              // notiDB.update({read:false});
+              _noti_item.set({
+                post_id: post.id,
+                user_name: comment.user_name,
+                image_url: post.image_url,
+                insert_dt: comment.insert_dt,
+              }, (err) => {
+                if(err){
+                  console.log('알림 저장에 실패했습니다.!!');
+                } else {
+                    const notiDB = realtime.ref(`noti/${post.user_info.user_id}`);
+                    notiDB.update({read: false});
+                }
+              })
+            }
           }
         });
       })
