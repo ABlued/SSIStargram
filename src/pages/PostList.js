@@ -5,7 +5,7 @@ import {actionCreators as postActions} from "../redux/modules/post";
 import InfinityScroll from '../shared/InfinityScroll'
 import { firestore } from "../shared/firebase";
 
-import { Grid } from '../elements';
+import { Grid, LikedButton } from '../elements';
 
 const PostList = (props) => {
     const dispatch = useDispatch();
@@ -15,17 +15,10 @@ const PostList = (props) => {
     const paging = useSelector((state) => state.post.paging);
     const { history } = props;
     React.useEffect(() => {
-        // const userDB = firestore.collection("userProfileInfo");
-        // console.log(user_info.uid);
-        // userDB.where("id", "==", user_info.uid).get().then(docs => {
-        //     docs.forEach(doc => {
-        //         console.log(doc.data());
-        //     })
-        // })
         if(post_list.length < 2){
             dispatch(postActions.getPostFB());
         }
-    }, []);
+    }, [user_info]);
 
     return (
         <React.Fragment>
@@ -36,18 +29,39 @@ const PostList = (props) => {
                 loading={is_loading}
             >
                 {post_list.map((p, idx) => {
-                    
                     if(user_info && p.user_info.user_id === user_info.uid){
                         return (
-                            <Grid key={p.id} _onClick={() => {history.push(`/post/${p.id}`)}}>
-                                <Post {...p} is_me/>   
-                            </Grid>
+                            <>
+                            <div key={p.id}>
+                                <Grid _onClick={() => {history.push(`/post/${p.id}`)}}>
+                                    <Post {...p} is_me/>   
+                                </Grid>
+                                <Grid padding="16px">
+                                    <span style={{fontWeight:'bold', marginRight:'5px'}}>좋아요 {p.liked_cnt}개</span>
+                                    <span style={{fontWeight:'bold', marginRight:'5px'}}>댓글 {p.comment_cnt}개</span>
+                                    {
+                                        user_info && <LikedButton post_id={p.id} idx={idx}/>
+                                    }
+                                </Grid>
+                            </div>
+                            </>
                         )
                     }
                     return (
-                        <Grid key={p.id} _onClick={() => {history.push(`/post/${p.id}`)}}>
-                            <Post {...p} />
-                        </Grid>
+                        <>
+                            <div key={p.id}>
+                                <Grid  _onClick={() => {history.push(`/post/${p.id}`)}}>
+                                    <Post {...p} />
+                                </Grid>
+                                <Grid padding="16px">
+                                    <span style={{fontWeight:'bold', marginRight:'5px'}}>좋아요 {p.liked_cnt}개</span>
+                                    <span style={{fontWeight:'bold', marginRight:'5px'}}>댓글 {p.comment_cnt}개</span>
+                                    {
+                                        user_info && <LikedButton post_id={p.id} idx={idx}/>
+                                    }
+                                </Grid>
+                            </div>
+                        </>
                     )
                 })}
                 {/* <button onClick={() => dispatch(postActions.getPostFB(paging.next))}>추가로드</button> */}

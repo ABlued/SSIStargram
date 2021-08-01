@@ -7,6 +7,7 @@ import User from "./modules/user";
 import Post from "./modules/post";
 import Image from "./modules/image"
 import Comment from "./modules/comment";
+
 export const history = createBrowserHistory();
 
 // rootReducer 만들기

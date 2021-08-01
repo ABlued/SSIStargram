@@ -1,5 +1,5 @@
 import React from "react";
-import { Grid, Text, Button } from "../elements";
+import { Grid, Text, Button, Image } from "../elements";
 
 import { useSelector, useDispatch } from "react-redux";
 import { actionCreators as userActions } from "../redux/modules/user";

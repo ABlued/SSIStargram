@@ -41,7 +41,7 @@ const Signup = () => {
         <Grid padding="16px 0px">
           <Input
             label="아이디"
-            placeholder="아이디를 입력해주세요."
+            placeholder="이메일 형식으로 입력해주세요."
             _onChange={(e) => {
               setId(e.target.value);
             }}
@@ -62,7 +62,7 @@ const Signup = () => {
           <Input
             label="비밀번호"
             type="password"
-            placeholder="비밀번호를 입력해주세요."
+            placeholder="비밀번호를 6자이상으로 입력해주세요."
             _onChange={(e) => {
               setPwd(e.target.value);
             }}

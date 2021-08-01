@@ -3,7 +3,6 @@ import {Grid, Image, Text, Button} from "../elements";
 import { history } from "../redux/configureStore";
 
 const Post = memo((props) => {
-  console.log(props);
     return (
       <React.Fragment>
         <Grid margin="10px 0px 0px 0px">
@@ -22,9 +21,6 @@ const Post = memo((props) => {
           </Grid>
           <Grid>
             <Image shape="rectangle" src={props.image_url} />
-          </Grid>
-          <Grid padding="16px">
-            <Text margin="0px" bold>댓글 {props.comment_cnt}개</Text>
           </Grid>
         </Grid>
       </React.Fragment>

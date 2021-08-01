@@ -61,14 +61,14 @@ const loginFB = (id, pwd) => {
             auth
             .signInWithEmailAndPassword(id, pwd)        // firebase에서 로그인 정보가 유효한지 체크
             .then((user) => {
-
                 let imageSrc = '';
                 const userDB = firestore.collection("userProfileInfo");
-                console.log(user.user.uid);
+                // console.log(user.user.uid);
+                sessionStorage.setItem("user_id",user.user.uid);
                 userDB.where("id", "==", user.user.uid).get().then(docs => {
                     docs.forEach(doc => {
                         imageSrc = doc.data().src;
-                        console.log(doc.data().src);
+                        // console.log(doc.data().src);
                     })
                     dispatch(setUser({
                         user_name: user.user.displayName,
@@ -82,7 +82,8 @@ const loginFB = (id, pwd) => {
             .catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
-                console.log(errorCode, errorMessage);
+                // console.log(errorCode, errorMessage);
+                alert("이메일 또는 비밀번호가 유효하지 않습니다!");
             });
         });
     }
@@ -114,6 +115,7 @@ const logoutFB = () => {
     return function (dispatch, getState, {history}) {
         auth.signOut().then(() => {
             dispatch(logOut());
+            sessionStorage.removeItem("user_id");
             history.replace('/');       // 뒤로가기를 해도 전 페이지가 나오지 않음
         })
     }
@@ -156,13 +158,13 @@ const signupFB = (id, pwd, user_name) => {
                 })
                 history.push('./');
             }).catch((error) => {
-                console.log(error);
+                // console.log(error);
             })
         })
         .catch((error) => {
             var errorCode = error.code;
             var errorMessage = error.message;
-            console.log(errorCode, errorMessage);
+            // console.log(errorCode, errorMessage);
         });
     }
 }

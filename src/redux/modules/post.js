@@ -3,6 +3,7 @@ import { produce } from "immer";
 import { firestore, storage } from "../../shared/firebase";
 import "moment";
 import moment from "moment";
+import firebase from 'firebase/app';
 
 import { actionCreators as imageActions } from "./image";
 
@@ -10,6 +11,9 @@ const SET_POST = "SET_POST";
 const ADD_POST = "ADD_POST";
 const EDIT_POST = "EDIT_POST";
 const LOADING = "LOADING";
+const LIKEPOST = "LIKEPOST";
+const HATEPOST = "HATEPOST";
+
 
 const setPost = createAction(SET_POST, (post_list, paging) => ({ post_list, paging }));
 const addPost = createAction(ADD_POST, (post) => ({ post }));
@@ -18,6 +22,8 @@ const editPost = createAction(EDIT_POST, (post_id, post) => ({
   post,
 }));
 const loading = createAction(LOADING, (is_loading) => ({is_loading}));
+const likePost = createAction(LIKEPOST, (idx, user_id) => ({idx, user_id}));
+const hatePost = createAction(HATEPOST, (idx, user_id) => ({idx, user_id}));
 
 const initialState = {
   list: [],
@@ -33,14 +39,17 @@ const initialPost = {
   // },
   image_url: "https://mean0images.s3.ap-northeast-2.amazonaws.com/4.jpeg",
   contents: "",
+  liked_cnt: 0,
   comment_cnt: 0,
   insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),       //오늘 날짜가 moment객체가 format함수를 통해 string형으로 변환
+  likedUser: [],
 };
 
 const editPostFB = (post_id = null, post = {}) => {
   return function (dispatch, getState, { history }) {
     if (!post_id) {
-      console.log("게시물 정보가 없어요!");
+      // console.log("게시물 정보가 없어요!");
+      alert("게시물 정보가 없습니다!");
       return;
     }
 
@@ -71,7 +80,6 @@ const editPostFB = (post_id = null, post = {}) => {
         snapshot.ref
           .getDownloadURL()
           .then((url) => {
-            console.log(url);
 
             return url;
           })
@@ -81,12 +89,14 @@ const editPostFB = (post_id = null, post = {}) => {
               .update({ ...post, image_url: url })
               .then((doc) => {
                 dispatch(editPost(post_id, { ...post, image_url: url }));
+
+                dispatch(imageActions.setPreview(null));
                 history.replace("/");
               });
           })
           .catch((err) => {
-            window.alert("앗! 이미지 업로드에 문제가 있어요!");
-            console.log("앗! 이미지 업로드에 문제가 있어요!", err);
+            window.alert("앗! 이미지 업로드에 문제가 있어요! 에러코드 : ", err);
+            // console.log("앗! 이미지 업로드에 문제가 있어요!", err);
           });
       });
     }
@@ -138,13 +148,13 @@ const addPostFB = (contents = "") => {
               dispatch(imageActions.setPreview(null));
             })
             .catch((err) => {
-              window.alert("앗! 포스트 작성에 문제가 있어요!");
-              console.log("post 작성에 실패했어요!", err);
+              window.alert("앗! 포스트 작성에 문제가 있어요! 에러코드 : ", err);
+              // console.log("post 작성에 실패했어요!", err);
             });
         })
         .catch((err) => {
-          window.alert("앗! 이미지 업로드에 문제가 있어요!");
-          console.log("앗! 이미지 업로드에 문제가 있어요!", err);
+          window.alert("앗! 이미지 업로드에 문제가 있어요! 에러코드 : ", err);
+          // console.log("앗! 이미지 업로드에 문제가 있어요!", err);
         });
     });
   };
@@ -248,7 +258,66 @@ const getOnePostFB = (id) => {
     })
   }
 }
+const likedPostFB = (user_id, post_id) => {
+  return function (dispatch, getState, {history}){
+    const increment = firebase.firestore.FieldValue.increment(1);
+    const user = getState().user.user; // getState는 store에 있는 객체를 갖고옴
+    const post = getState().post.list; // getState는 store에 있는 객체를 갖고옴
+    if(!user) return;
+    const postDB = firestore.collection("post");
 
+    postDB
+    .doc(post_id)
+    .get()
+    .then(doc => {
+      let ary = [...doc.data().likedUser];
+
+      postDB
+      .doc(post_id)
+      .update({
+        liked_cnt:increment,
+        likedUser: [...ary, user_id],
+      })
+      .then(_ => {
+        for(let i = 0; i < post.length; i++){
+          if(post[i].id === post_id){
+            dispatch(likePost(i, user_id));
+          }
+        }
+      })
+    });
+  }
+}
+const hatedPostFB = (user_id, post_id) => {
+  return function (dispatch, getState, {history}){
+    const decrease = firebase.firestore.FieldValue.increment(-1);
+    const user = getState().user.user; // getState는 store에 있는 객체를 갖고옴
+    const post = getState().post.list; // getState는 store에 있는 객체를 갖고옴
+    if(!user) return;
+    const postDB = firestore.collection("post");
+
+    postDB
+    .doc(post_id)
+    .get()
+    .then(doc => {
+      const ary = [...doc.data().likedUser].filter(v => v !== user_id);
+
+      postDB
+      .doc(post_id)
+      .update({
+        liked_cnt:decrease,
+        likedUser: [...ary],
+      })
+      .then(_ => {
+        for(let i = 0; i < post.length; i++){
+          if(post[i].id === post_id){
+            dispatch(hatePost(i, user_id));
+          }
+        }
+      })
+    });
+  }
+}
 
 export default handleActions(
   {
@@ -283,7 +352,17 @@ export default handleActions(
       }),
     [LOADING]: (state, action) => produce(state, (draft) => {
       draft.is_loading = action.payload.is_loading;
-    })
+    }),
+    [LIKEPOST]: (state, action) => produce(state, (draft) => {
+      draft.list[action.payload.idx].liked_cnt++;
+      draft.list[action.payload.idx].likedUser = [...draft.list[action.payload.idx].likedUser, action.payload.user_id];
+    }),
+    [HATEPOST]: (state, action) => produce(state, (draft) => {
+      draft.list[action.payload.idx].liked_cnt--;
+      const ary = draft.list[action.payload.idx].likedUser.filter(v => v !== action.payload.user_id);
+      draft.list[action.payload.idx].likedUser = [...ary];
+
+    }),
   },
   initialState
 );
@@ -296,6 +375,8 @@ const actionCreators = {
   addPostFB,
   editPostFB,
   getOnePostFB,
+  likedPostFB,
+  hatedPostFB,
 };
 
 export { actionCreators };

@@ -4,5 +4,5 @@ import Text from "./Text";
 import Input from "./Input";
 import Button from "./Button";
 import Spinner from "./Spinner";
-
-export {Grid, Image, Text, Input, Button, Spinner};
+import LikedButton from './LikedButton'
+export {Grid, Image, Text, Input, Button, Spinner, LikedButton};

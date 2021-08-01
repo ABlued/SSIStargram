@@ -57,7 +57,8 @@ const addCommentFB = (post_id, contents) => {
                 insert_dt: comment.insert_dt,
               }, (err) => {
                 if(err){
-                  console.log('알림 저장에 실패했습니다.!!');
+                  // console.log('알림 저장에 실패했습니다.!!');
+                  alert("알림 저장에 실패했습니다! 에러코드 : ", err)
                 } else {
                     const notiDB = realtime.ref(`noti/${post.user_info.user_id}`);
                     notiDB.update({read: false});
@@ -84,7 +85,8 @@ const getCommentFB = (post_id = null) => {
           })
           dispatch(setComment(post_id, list));
         }).catch(err => {
-          console.log("댓글 정보를 가져올 수가 없습니다!", err);
+          // console.log("댓글 정보를 가져올 수가 없습니다!", err);
+          alert("댓글 정보를 가져올 수가 없습니다! 에러코드 : ", err)
         })
     }
 }
