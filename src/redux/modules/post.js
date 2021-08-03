@@ -32,16 +32,11 @@ const initialState = {
 };
 
 const initialPost = {
-  // id: 0,
-  // user_info: {
-  //   user_name: "mean0",
-  //   user_profile: "https://mean0images.s3.ap-northeast-2.amazonaws.com/4.jpeg",
-  // },
   image_url: "https://mean0images.s3.ap-northeast-2.amazonaws.com/4.jpeg",
   contents: "",
   liked_cnt: 0,
   comment_cnt: 0,
-  insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),       //오늘 날짜가 moment객체가 format함수를 통해 string형으로 변환
+  insert_dt: moment().format("YYYY-MM-DD HH:mm:ss"),       //오늘 날짜가 moment객체가 format함수를 통해 string형으로 변환
   likedUser: [],
 };
 
@@ -118,7 +113,7 @@ const addPostFB = (contents = "") => {
     const _post = {
       ...initialPost,
       contents: contents,
-      insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),        // add 함수가 들어왔을때 시간을 체크해야 한다.
+      insert_dt: moment().format("YYYY-MM-DD HH:mm:ss"),        // add 함수가 들어왔을때 시간을 체크해야 한다.
     };
 
     const _image = getState().image.preview;
@@ -129,18 +124,17 @@ const addPostFB = (contents = "") => {
     const _upload = storage
       .ref(`images/${user_info.user_id}_${new Date().getTime()}`)
       .putString(_image, "data_url");
-
+    // console.log(user_info);
+    // console.log(_post);
     _upload.then((snapshot) => {
       snapshot.ref
         .getDownloadURL()
         .then((url) => {
-            // console.log(url);       // 업로드 링크 받아오기
-            return url;
-        })
-        .then((url) => {        //DB에 저장하기
-          postDB
-            .add({ ...user_info, ..._post, image_url: url })
+          // console.log(url);       // 업로드 링크 받아오기
+          //DB에 저장하기
+          postDB.add({ ...user_info, ..._post, image_url: url })
             .then((doc) => {
+              // console.log(doc);
               let post = { user_info, ..._post, id: doc.id, image_url: url };
               dispatch(addPost(post));
               history.replace("/");
@@ -149,12 +143,12 @@ const addPostFB = (contents = "") => {
             })
             .catch((err) => {
               window.alert("앗! 포스트 작성에 문제가 있어요! 에러코드 : ", err);
-              // console.log("post 작성에 실패했어요!", err);
+              console.log("post 작성에 실패했어요!", err);
             });
         })
         .catch((err) => {
           window.alert("앗! 이미지 업로드에 문제가 있어요! 에러코드 : ", err);
-          // console.log("앗! 이미지 업로드에 문제가 있어요!", err);
+          console.log("앗! 이미지 업로드에 문제가 있어요!", err);
         });
     });
   };

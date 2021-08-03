@@ -82,7 +82,7 @@ const loginFB = (id, pwd) => {
             .catch((error) => {
                 var errorCode = error.code;
                 var errorMessage = error.message;
-                // console.log(errorCode, errorMessage);
+                console.log(errorCode, errorMessage);
                 alert("이메일 또는 비밀번호가 유효하지 않습니다!");
             });
         });
@@ -158,13 +158,13 @@ const signupFB = (id, pwd, user_name) => {
                 })
                 history.push('./');
             }).catch((error) => {
-                // console.log(error);
+                console.log(error);
             })
         })
         .catch((error) => {
             var errorCode = error.code;
             var errorMessage = error.message;
-            // console.log(errorCode, errorMessage);
+            console.log(errorCode, errorMessage);
         });
     }
 }

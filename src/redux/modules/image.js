@@ -37,6 +37,8 @@ export default handleActions({
     [UPLOAD_IMAGE]: (state, action) => produce(state, (draft) => {
         draft.image_url = action.payload.image_url;
         draft.uploading = false;
+        alert("업로드가 성공되었습니다.");
+
     }),
     [UPLOADING]: (state, action) => produce(state, (draft) => {
         draft.uploading = action.payload.uploading;

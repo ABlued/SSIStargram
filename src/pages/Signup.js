@@ -23,7 +23,10 @@ const Signup = () => {
       window.alert('이메일 형식이 맞지 않습니다!');
       return;
     }
-    
+    if(pwd.length < 6){
+      window.alert("패스워드는 6자리 이상입니다!");
+    }
+
     if (pwd !== pwd_check) {
       window.alert("패스워드와 패스워드 확인이 일치하지 않습니다!");
       return;
