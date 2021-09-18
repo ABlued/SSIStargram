@@ -1,0 +1,20 @@
+.iconButton{
+    cursor: pointer;
+    font-size: 30px;
+    animation: flash 0.4s ease forwards;
+}
+@keyframes flash {
+    0%{
+        transform: scale(1);
+    } 
+    50%{
+        transform: scale(1.2);
+    }
+    100%{
+        transform: scale(1);
+    }
+}
+.red {
+  color:red;
+  opacity: 0.8;
+}

@@ -1,4 +1,5 @@
 import React, {useState, useEffect, memo} from 'react';
+import './LikeButton.css'
 import {HeartOutlined, HeartFilled} from '@ant-design/icons';
 import {actionCreators as PostActions} from '../redux/modules/post';
 import { useSelector, useDispatch } from 'react-redux';
@@ -34,10 +35,10 @@ const LikedButton = memo(({post_id, idx}) => {
         <>
             {isChecked ?
                 <HeartFilled 
-                    style={{color:'red', fontSize:'30px'}}
+                    className="iconButton red"
                     onClick={onClick}/> :
                 <HeartOutlined  
-                    style={{fontSize:'30px'}}
+                    className="iconButton"
                     onClick={onClick}
 
                 />}				

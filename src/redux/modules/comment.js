@@ -31,7 +31,7 @@ const addCommentFB = (post_id, contents) => {
       user_name: user_info.user_name,
       user_profile: user_info.user_profile,
       contents: contents,
-      insert_dt: moment().format("YYYY-MM-DD hh:mm:ss"),
+      insert_dt: moment().format("YYYY-MM-DD HH:mm:ss"),
     }
     commentDB.add(comment).then((doc) => {
       const postDB = firestore.collection("post");
