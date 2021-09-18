@@ -78,8 +78,11 @@
   
   
 ![업로드화면](https://user-images.githubusercontent.com/53801395/128294496-55b5d12f-b5d1-46ba-a540-1e91f9ab3e69.jpg)
-
   
+  
+:heavy_check_mark: 구현된 기능들
+---
+로그인, 회원가입, 사진 업로드 및 수정, 댓글 및 좋아요, 실시간 알림
   
   
 :books: 주로 쓰인 개념들 
