@@ -18,6 +18,8 @@ const LikedButton = memo(({post_id, idx}) => {
                 dispatch(PostActions.likedPostFB(user_id, post_id));
                 setIsChecked(true);
             }
+        } else {
+            alert("로그인 후 이용하실 수 있습니다.");
         }
 
     }

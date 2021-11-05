@@ -1,0 +1,23 @@
+.Section1 {
+  animation: appear 0.5s 0.5s ease forwards;
+  visibility: hidden;
+}
+.Section2 {
+  animation: appear 0.5s 1s ease forwards;
+  visibility: hidden;
+}
+.Section3 {
+  animation: appear 0.5s 1.5s ease forwards;
+  visibility: hidden;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    visibility: visible;
+    opacity: 1;
+  }
+}

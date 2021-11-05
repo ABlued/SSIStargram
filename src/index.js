@@ -1,16 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-
 import './index.css';
 import App from './shared/App';
 // import reportWebVitals from './reportWebVitals';
-import store from './redux/configureStore'
+import store from './redux/configureStore';
 // import {analytics} from './shared/firebase';
 
 ReactDOM.render(
   <Provider store={store}>
-    <App/>
+    <App />
   </Provider>,
   document.getElementById('root')
 );
